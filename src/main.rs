@@ -73,24 +73,29 @@ impl Particle {
 
 const DIMS: (u32, u32) = (100, 100);
 const DIMS_F32: (f32, f32) = (DIMS.0 as f32, DIMS.1 as f32);
+
+#[allow(dead_code)]
+enum Instance {
+    SimpleElliptical,
+    Circle,
+}
+
 fn main() {
-    let mut particles: Vec<Particle> = Vec::new();
-    particles.push(Particle::new(
-        10f32.powi(13),
-        0.0,
-        0.0,
-        50.0,
-        50.0,
-        [255, 165, 0],
-    ));
-    particles.push(Particle::new(
-        10f32.powi(12),
-        0.0,
-        -3.0,
-        75.0,
-        50.0,
-        [0, 0, 255],
-    ));
+    let instance: Instance = Instance::SimpleElliptical;
+    let mut particles: Vec<Particle> = match instance {
+        Instance::SimpleElliptical => {
+            vec![
+                Particle::new(10f32.powi(13), 0.0, 0.0, 50.0, 50.0, [255, 165, 0]),
+                Particle::new(1.0, 0.0, -3.0, 75.0, 50.0, [0, 0, 255]),
+            ]
+        }
+        Instance::Circle => {
+            vec![
+                Particle::new(10f32.powi(13), 0.0, 0.0, 50.0, 50.0, [255, 165, 0]),
+                Particle::new(1.0, 0.0, 26.6972f32.sqrt(), 75.0, 50.0, [0, 0, 255]),
+            ]
+        }
+    };
 
     let event_loop = EventLoop::new();
     // let mut input = WinitInputHelper::new();
@@ -119,6 +124,7 @@ fn main() {
         pixels.get_frame_mut().fill(0u8);
         let particles_copy = particles.clone();
         particles.iter_mut().enumerate().for_each(|(i, p)| {
+            // apply gravity from every object
             particles_copy
                 .iter()
                 .enumerate()
@@ -127,17 +133,23 @@ fn main() {
                         p.gravity(p_other)
                     }
                 });
+
+            // tick the particle
             p.tick()
         });
 
         let frame = pixels.get_frame_mut();
         particles.iter().for_each(|p| {
+            // convert to u32 and clamp
             let x = (p.pos_x as u32).clamp(0, DIMS.0 - 1);
             let y = (p.pos_y as u32).clamp(0, DIMS.1 - 1);
 
+            // calculate linear index
             let i = ((y * DIMS.0) + x) as usize * 4;
 
+            // set color
             frame[i..=i + 2].copy_from_slice(&p.rgb);
+            // set alpha channel
             frame[i + 3] = 255u8;
         });
         pixels.render().unwrap();
