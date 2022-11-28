@@ -1,0 +1,12 @@
+[package]
+name = "universal_grav"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.8"
+# rayon = "1.5"
+pixels =  "0.10.0"
+winit = "0.27"
