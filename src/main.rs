@@ -132,7 +132,6 @@ fn main() {
 
         let frame = pixels.get_frame_mut();
         particles.iter().for_each(|p| {
-            println!("{:?}", p);
             let x = (p.pos_x as u32).clamp(0, DIMS.0 - 1);
             let y = (p.pos_y as u32).clamp(0, DIMS.1 - 1);
 
