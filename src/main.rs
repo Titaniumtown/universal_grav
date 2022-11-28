@@ -11,6 +11,7 @@ struct Particle {
     rgb: [u8; 3],
 }
 pub const TIME_DELTA: f32 = 0.1;
+pub const G: f64 = -6.67430E-11;
 
 impl Particle {
     fn new(mass: f32, v_x: f32, v_y: f32, pos_x: f32, pos_y: f32, rgb: [u8; 3]) -> Particle {
@@ -32,15 +33,16 @@ impl Particle {
 
     // this does not work and i don't know why
     fn gravity(&mut self, other: &Particle) {
-        if *self == *other {
+        let x_neg = self.pos_x - other.pos_x;
+        let y_neg = self.pos_y - other.pos_y;
+
+        // if particles are located at the exact same coordinate, don't do any calculations
+        if x_neg == 0.0 && y_neg == 0.0 {
             return;
         }
 
-        let x_neg = self.pos_x - other.pos_x;
-        let y_neg = self.pos_y - other.pos_y;
         let sq_dist = x_neg.powi(2) + y_neg.powi(2);
 
-        const G: f64 = -6.67430E-11;
         let acceleration = (G * other.mass as f64) / sq_dist as f64;
 
         if !acceleration.is_normal() {
@@ -72,6 +74,7 @@ impl Particle {
 }
 
 const DIMS: (u32, u32) = (100, 100);
+const GRID_CENTER: (f32, f32) = (DIMS.0 as f32 / 2.0, DIMS.1 as f32 / 2.0);
 const DIMS_F32: (f32, f32) = (DIMS.0 as f32, DIMS.1 as f32);
 
 #[allow(dead_code)]
@@ -81,7 +84,7 @@ enum Instance {
 }
 
 fn main() {
-    let instance: Instance = Instance::SimpleElliptical;
+    let instance: Instance = Instance::Circle;
     let mut particles: Vec<Particle> = match instance {
         Instance::SimpleElliptical => {
             vec![
@@ -90,9 +93,32 @@ fn main() {
             ]
         }
         Instance::Circle => {
+            let center_size: f32 = 10f32.powi(13);
+            let center: f32 = GRID_CENTER.0;
+            let radius: f32 = 25.0;
+            let orbit_speed = ((-G * (center_size as f64)) / radius as f64).sqrt() as f32;
+
+            // internal time
+            let period = (2.0 * std::f32::consts::PI * radius) / orbit_speed;
+
+            // takes TIME_DELTA into account
+            let user_period = period * TIME_DELTA;
+
+            println!(
+                "center mass: {}kg\norbit radius: {} meters\norbit speed: {} m/s\nperiod: {}s ({}s)",
+                center_size, radius, orbit_speed, period, user_period
+            );
+
             vec![
-                Particle::new(10f32.powi(13), 0.0, 0.0, 50.0, 50.0, [255, 165, 0]),
-                Particle::new(1.0, 0.0, 26.6972f32.sqrt(), 75.0, 50.0, [0, 0, 255]),
+                Particle::new(center_size, 0.0, 0.0, center, GRID_CENTER.1, [255, 165, 0]),
+                Particle::new(
+                    1.0,
+                    0.0,
+                    orbit_speed,
+                    center + radius,
+                    GRID_CENTER.1,
+                    [0, 0, 255],
+                ),
             ]
         }
     };
