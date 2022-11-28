@@ -1,5 +1,5 @@
 use crate::{
-    misc::{DIMS, G, GRID_CENTER, TIME_DELTA},
+    misc::{DIMS, GRID_CENTER, TIME_DELTA, orbit_speed},
     particle::Particle,
 };
 
@@ -28,7 +28,7 @@ fn main() {
             let center_size: f32 = 10f32.powi(13);
             let center: f32 = GRID_CENTER.0;
             let radius: f32 = 25.0;
-            let orbit_speed = ((-G * (center_size as f64)) / radius as f64).sqrt() as f32;
+            let orbit_speed = orbit_speed(center_size as f64, radius as f64);
 
             // internal time
             let period = (2.0 * std::f32::consts::PI * radius) / orbit_speed;
