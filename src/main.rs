@@ -1,5 +1,5 @@
 use crate::{
-    misc::{DIMS, GRID_CENTER, TIME_DELTA, orbit_speed},
+    misc::{orbit_speed, DIMS, GRID_CENTER, TIME_DELTA},
     particle::Particle,
 };
 
@@ -10,21 +10,21 @@ mod misc;
 mod particle;
 
 #[allow(dead_code)]
-enum Instance {
+enum Scenario {
     SimpleElliptical,
     Circle,
 }
 
 fn main() {
-    let instance: Instance = Instance::SimpleElliptical;
+    let instance: Scenario = Scenario::SimpleElliptical;
     let mut particles: Vec<Particle> = match instance {
-        Instance::SimpleElliptical => {
+        Scenario::SimpleElliptical => {
             vec![
                 Particle::new(10f32.powi(13), 0.0, 0.0, 50.0, 50.0, [255, 165, 0]),
                 Particle::new(1.0, 0.0, -3.0, 75.0, 50.0, [0, 0, 255]),
             ]
         }
-        Instance::Circle => {
+        Scenario::Circle => {
             let center_size: f32 = 10f32.powi(13);
             let center: f32 = GRID_CENTER.0;
             let radius: f32 = 25.0;
