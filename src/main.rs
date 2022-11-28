@@ -37,22 +37,22 @@ impl Particle {
         let x_neg = self.pos_x - other.pos_x;
         let y_neg = self.pos_y - other.pos_y;
 
-        const G: f64 = -0.0000000000667430;
-        // const G: f64 = 0.0001;
+        const G: f64 = -6.67430E-11;
         let acceleration = (G * other.mass as f64) / ((x_neg.powi(2) + y_neg.powi(2)) as f64);
-        println!("a: {}", acceleration);
+        // println!("a: {}", acceleration);
 
         if !acceleration.is_normal() {
             return;
         }
-        let velocity = acceleration * TIME_DELTA as f64;
+
+        let velocity_change = acceleration as f32 * TIME_DELTA;
         // println!("v: {}", velocity);
 
-        let degree = ((y_neg / x_neg).atan()) as f64;
+        let degree = y_neg.atan2(x_neg) as f32;
         // println!("d: {}", degree);
 
-        let y_add = degree.sin() * velocity;
-        let x_add = degree.cos() * velocity;
+        let y_add = degree.sin() * velocity_change;
+        let x_add = degree.cos() * velocity_change;
         self.v_y += y_add as f32;
         self.v_x += x_add as f32;
     }
