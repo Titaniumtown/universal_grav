@@ -8,17 +8,19 @@ struct Particle {
     v_y: f32,
     pos_x: f32,
     pos_y: f32,
+    rgb: [u8; 3],
 }
 pub const TIME_DELTA: f32 = 0.1;
 
 impl Particle {
-    fn new(mass: f32, v_x: f32, v_y: f32, pos_x: f32, pos_y: f32) -> Particle {
+    fn new(mass: f32, v_x: f32, v_y: f32, pos_x: f32, pos_y: f32, rgb: [u8; 3]) -> Particle {
         Particle {
             mass,
             v_x,
             v_y,
             pos_x: pos_x.clamp(0.0, DIMS_F32.0),
             pos_y: pos_y.clamp(0.0, DIMS_F32.1),
+            rgb,
         }
     }
 
@@ -36,23 +38,20 @@ impl Particle {
 
         let x_neg = self.pos_x - other.pos_x;
         let y_neg = self.pos_y - other.pos_y;
+        let sq_dist = x_neg.powi(2) + y_neg.powi(2);
 
         const G: f64 = -6.67430E-11;
-        let acceleration = (G * other.mass as f64) / ((x_neg.powi(2) + y_neg.powi(2)) as f64);
-        // println!("a: {}", acceleration);
+        let acceleration = (G * other.mass as f64) / sq_dist as f64;
 
         if !acceleration.is_normal() {
             return;
         }
 
-        let velocity_change = acceleration as f32 * TIME_DELTA;
-        // println!("v: {}", velocity);
+        let diff_velocity = acceleration as f32 * TIME_DELTA;
 
-        let degree = y_neg.atan2(x_neg) as f32;
-        // println!("d: {}", degree);
-
-        let y_add = degree.sin() * velocity_change;
-        let x_add = degree.cos() * velocity_change;
+        let dist = sq_dist.sqrt();
+        let y_add = diff_velocity * y_neg / dist;
+        let x_add = diff_velocity * x_neg / dist;
         self.v_y += y_add as f32;
         self.v_x += x_add as f32;
     }
@@ -74,26 +73,24 @@ impl Particle {
 
 const DIMS: (u32, u32) = (100, 100);
 const DIMS_F32: (f32, f32) = (DIMS.0 as f32, DIMS.1 as f32);
-// const PARTICLE_NUM: usize = 2;
 fn main() {
     let mut particles: Vec<Particle> = Vec::new();
-    // let mut rand = rand::thread_rng();
-    // for _ in 0..PARTICLE_NUM {
-    //     let x = rand.gen_range(0.0..DIMS_F32.0);
-    //     let y = rand.gen_range(0.0..DIMS_F32.1);
-    //     let v_x = rand.gen_range(-1.0..1.0);
-    //     let v_y = rand.gen_range(-1.0..1.0);
-
-    //     // let x = 42.33694;
-    //     // let y = 52.714787;
-    //     // let v_x = 0.49794364;
-    //     // let v_y = -0.5317668;
-
-    //     let particle = Particle::new(1.0, v_x, v_y, x, y);
-    //     particles.push(particle);
-    // }
-    particles.push(Particle::new(10f32.powi(13), 0.0, 0.0, 50.0, 50.0));
-    particles.push(Particle::new(1.0, 0.0, -3.0, 75.0, 50.0));
+    particles.push(Particle::new(
+        10f32.powi(13),
+        0.0,
+        0.0,
+        50.0,
+        50.0,
+        [255, 165, 0],
+    ));
+    particles.push(Particle::new(
+        10f32.powi(12),
+        0.0,
+        -3.0,
+        75.0,
+        50.0,
+        [0, 0, 255],
+    ));
 
     let event_loop = EventLoop::new();
     // let mut input = WinitInputHelper::new();
@@ -141,7 +138,8 @@ fn main() {
 
             let i = ((y * DIMS.0) + x) as usize * 4;
 
-            frame[i..i + 4].copy_from_slice(&[255u8, 255u8, 255u8, 255u8])
+            frame[i..=i + 2].copy_from_slice(&p.rgb);
+            frame[i + 3] = 255u8;
         });
         pixels.render().unwrap();
     });
