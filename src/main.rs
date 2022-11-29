@@ -5,7 +5,10 @@ use crate::{
 
 use pixels::{PixelsBuilder, SurfaceTexture};
 use winit::{
-    dpi::LogicalSize, event::VirtualKeyCode, event_loop::EventLoop, window::WindowBuilder,
+    dpi::LogicalSize,
+    event::VirtualKeyCode,
+    event_loop::{ControlFlow, EventLoop},
+    window::WindowBuilder,
 };
 use winit_input_helper::WinitInputHelper;
 
@@ -174,12 +177,16 @@ fn main() {
         PixelsBuilder::new(DIMS.0, DIMS.1, surface_texture)
             .enable_vsync(true)
             .build()
-            .expect("failed to create pixels")
+            .map_err(|e| panic!("failed to build pixels: {e}"))
+            .unwrap()
     };
 
     let mut screen_data: Vec<(usize, [u8; 3])> = Vec::new();
     let mut screen_data_old: Vec<(usize, [u8; 3])> = Vec::new();
-    event_loop.run(move |event, _, _| {
+    let mut frames_rendered: u32 = 0;
+    let mut skipped_frames: u32 = 0;
+
+    event_loop.run(move |event, _, control_flow| {
         screen_data.clear();
         if input.update(&event) {
             if input.key_released(VirtualKeyCode::Right) {
@@ -190,6 +197,21 @@ fn main() {
             if input.key_pressed(VirtualKeyCode::Left) {
                 scenario = scenario.decr();
                 particles = set_scenario(scenario);
+            }
+
+            // exit if escape key pressed
+            if input.key_pressed(VirtualKeyCode::Escape) {
+                *control_flow = ControlFlow::Exit;
+            }
+
+            // print info when I key pressed
+            if input.key_pressed(VirtualKeyCode::I) && frames_rendered != 0 {
+                let percent_skipped: f32 =
+                    ((skipped_frames as f32) / (frames_rendered as f32)) * 100.0;
+                println!(
+                    "frames skipped: {}% ({}/{})",
+                    percent_skipped, skipped_frames, frames_rendered
+                );
             }
         }
         pixels.get_frame_mut().fill(0u8);
@@ -230,9 +252,18 @@ fn main() {
                 // set alpha channel
                 frame[*i + 3] = 255u8;
             });
-            pixels.render().expect("failed to render");
+            if pixels
+                .render()
+                .map_err(|e| panic!("pixels.render() failed: {e}"))
+                .is_err()
+            {
+                *control_flow = ControlFlow::Exit;
+            }
             // no need to copy here as `screen_data` will be cleared on next iteration of the event loop
             std::mem::swap(&mut screen_data_old, &mut screen_data);
+        } else {
+            skipped_frames += 1;
         }
-    })
+        frames_rendered += 1;
+    });
 }
