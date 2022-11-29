@@ -51,8 +51,8 @@ impl Particle {
         let dist = sq_dist.sqrt();
         let y_add = diff_velocity * y_neg / dist;
         let x_add = diff_velocity * x_neg / dist;
-        self.v_y += y_add as f32;
-        self.v_x += x_add as f32;
+        self.v_y += y_add;
+        self.v_x += x_add;
     }
 
     fn wall_check(&mut self) {

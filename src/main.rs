@@ -85,7 +85,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f32.powi(13) as f64, 5.0 as f64),
+                    orbit_speed(10f64.powi(13), 5.0_f64),
                     55.0,
                     GRID_CENTER.1,
                     [150, 0, 250],
@@ -93,7 +93,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f32.powi(13) as f64, 10.0 as f64),
+                    orbit_speed(10f64.powi(13), 10.0_f64),
                     60.0,
                     GRID_CENTER.1,
                     [0, 0, 250],
@@ -101,7 +101,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f32.powi(13) as f64, 15.0 as f64),
+                    orbit_speed(10f64.powi(13), 15.0_f64),
                     65.0,
                     GRID_CENTER.1,
                     [255, 150, 0],
@@ -109,7 +109,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f32.powi(13) as f64, 20.0 as f64),
+                    orbit_speed(10f64.powi(13), 20.0_f64),
                     70.0,
                     GRID_CENTER.1,
                     [255, 150, 100],
@@ -117,7 +117,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f32.powi(13) as f64, 25.0 as f64),
+                    orbit_speed(10f64.powi(13), 25.0_f64),
                     75.0,
                     GRID_CENTER.1,
                     [0, 150, 150],
@@ -125,7 +125,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f32.powi(13) as f64, 30.0 as f64),
+                    orbit_speed(10f64.powi(13), 30.0_f64),
                     80.0,
                     GRID_CENTER.1,
                     [150, 150, 150],
