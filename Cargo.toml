@@ -10,7 +10,6 @@ strip = true
 lto = "fat"
 
 [dependencies]
-# rayon = "1.5"
 pixels =  "0.10.0"
 winit = "0.27"
 winit_input_helper = "0.13"
