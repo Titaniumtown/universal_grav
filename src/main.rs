@@ -55,16 +55,16 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
             let radius: f32 = 25.0;
             let orbit_speed = orbit_speed(center_mass as f64, radius as f64);
 
-            // internal time
-            let period = (2.0 * std::f32::consts::PI * radius) / orbit_speed;
+            // // internal time
+            // let period = (2.0 * std::f32::consts::PI * radius) / orbit_speed;
 
-            // takes TIME_DELTA into account
-            let user_period = period * TIME_DELTA;
+            // // takes TIME_DELTA into account
+            // let user_period = period * TIME_DELTA;
 
-            println!(
-                "center mass: {}kg\norbit radius: {} meters\norbit speed: {} m/s\nperiod: {}s ({}s)",
-                center_mass, radius, orbit_speed, period, user_period
-            );
+            // println!(
+            //     "center mass: {}kg\norbit radius: {} meters\norbit speed: {} m/s\nperiod: {}s ({}s)",
+            //     center_mass, radius, orbit_speed, period, user_period
+            // );
 
             vec![
                 Particle::new(center_mass, 0.0, 0.0, center, GRID_CENTER.1, [255, 165, 0]),
@@ -220,5 +220,4 @@ fn main() {
             frame[i + 3] = 255u8;
         });
         pixels.render().unwrap();
-    });
-}
+    })
