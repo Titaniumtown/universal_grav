@@ -4,12 +4,16 @@ use crate::{
 };
 
 use pixels::{PixelsBuilder, SurfaceTexture};
-use winit::{dpi::LogicalSize, event_loop::EventLoop, window::WindowBuilder};
+use winit::{
+    dpi::LogicalSize, event::VirtualKeyCode, event_loop::EventLoop, window::WindowBuilder,
+};
+use winit_input_helper::WinitInputHelper;
 
 mod misc;
 mod particle;
 
 #[allow(dead_code)]
+#[derive(Debug, Copy, Clone)]
 enum Scenario {
     SimpleElliptical,
     Circle,
@@ -17,13 +21,32 @@ enum Scenario {
     Dual,
 }
 
-fn main() {
-    let instance: Scenario = Scenario::Dual;
-    let mut particles: Vec<Particle> = match instance {
+impl Scenario {
+    fn incr(&self) -> Scenario {
+        match *self {
+            Scenario::SimpleElliptical => Scenario::Circle,
+            Scenario::Circle => Scenario::Multi,
+            Scenario::Multi => Scenario::Dual,
+            Scenario::Dual => Scenario::SimpleElliptical,
+        }
+    }
+
+    fn decr(&self) -> Scenario {
+        match *self {
+            Scenario::Circle => Scenario::SimpleElliptical,
+            Scenario::Multi => Scenario::Circle,
+            Scenario::Dual => Scenario::Multi,
+            Scenario::SimpleElliptical => Scenario::Dual,
+        }
+    }
+}
+
+fn set_scenario(s: Scenario) -> Vec<Particle> {
+    match s {
         Scenario::SimpleElliptical => {
             vec![
                 Particle::new(10f32.powi(13), 0.0, 0.0, 50.0, 50.0, [255, 165, 0]),
-                Particle::new(1.0, 0.0, -3.0, 75.0, 50.0, [0, 0, 255]),
+                Particle::new(1.0, 0.0, -3.0, 75.0, 50.0, [0, 255, 255]),
             ]
         }
         Scenario::Circle => {
@@ -55,19 +78,7 @@ fn main() {
                 ),
             ]
         }
-        Scenario::Dual => {
-            vec![
-                Particle::new(
-                    10f32.powi(13),
-                    0.0,
-                    -2.5,
-                    25.0,
-                    GRID_CENTER.1,
-                    [255, 165, 0],
-                ),
-                Particle::new(10f32.powi(13), 0.0, 2.5, 75.0, GRID_CENTER.1, [255, 165, 0]),
-            ]
-        }
+
         Scenario::Multi => {
             vec![
                 Particle::new(10f32.powi(13), 0.0, 0.0, 50.0, GRID_CENTER.1, [255, 165, 0]),
@@ -122,10 +133,28 @@ fn main() {
                 Particle::new(0.0, 1.5, 0.0, GRID_CENTER.1, 10.0, [200, 200, 200]),
             ]
         }
-    };
+        Scenario::Dual => {
+            vec![
+                Particle::new(
+                    10f32.powi(13),
+                    0.0,
+                    -2.5,
+                    25.0,
+                    GRID_CENTER.1,
+                    [255, 165, 0],
+                ),
+                Particle::new(10f32.powi(13), 0.0, 2.5, 75.0, GRID_CENTER.1, [255, 165, 0]),
+            ]
+        }
+    }
+}
+
+fn main() {
+    let mut scenario = Scenario::SimpleElliptical;
+    let mut particles: Vec<Particle> = set_scenario(scenario);
 
     let event_loop = EventLoop::new();
-    // let mut input = WinitInputHelper::new();
+    let mut input = WinitInputHelper::new();
     let window = {
         let size = LogicalSize::new(DIMS.0, DIMS.1);
         let scaled_size = LogicalSize::new(DIMS.0 * 10, DIMS.1 * 10);
@@ -147,7 +176,18 @@ fn main() {
             .expect("failed to create pixels")
     };
 
-    event_loop.run(move |_, _, _| {
+    event_loop.run(move |event, _, _| {
+        if input.update(&event) {
+            if input.key_released(VirtualKeyCode::Right) {
+                scenario = scenario.incr();
+                particles = set_scenario(scenario);
+            }
+
+            if input.key_pressed(VirtualKeyCode::Left) {
+                scenario = scenario.decr();
+                particles = set_scenario(scenario);
+            }
+        }
         pixels.get_frame_mut().fill(0u8);
         let particles_copy = particles.clone();
         particles.iter_mut().enumerate().for_each(|(i, p)| {
