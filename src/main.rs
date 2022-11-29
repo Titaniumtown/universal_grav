@@ -208,6 +208,7 @@ fn main() {
             if input.key_pressed(VirtualKeyCode::I) && frames_rendered != 0 {
                 let percent_skipped: f32 =
                     ((skipped_frames as f32) / (frames_rendered as f32)) * 100.0;
+
                 println!(
                     "frames skipped: {}% ({}/{})",
                     percent_skipped, skipped_frames, frames_rendered
@@ -216,6 +217,7 @@ fn main() {
                 println!("number of particles: {}", particles.len());
             }
         }
+
         pixels.get_frame_mut().fill(0u8);
         let particles_copy = particles.clone();
         particles.iter_mut().enumerate().for_each(|(i, p)| {
