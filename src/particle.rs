@@ -30,6 +30,11 @@ impl Particle {
 
     // this does not work and i don't know why
     pub fn gravity(&mut self, other: &Particle) {
+        // no need to do calculations if the other particle has mass of 0
+        if other.mass == 0.0 {
+            return;
+        }
+
         let x_neg = self.pos_x - other.pos_x;
         let y_neg = self.pos_y - other.pos_y;
 
