@@ -212,6 +212,8 @@ fn main() {
                     "frames skipped: {}% ({}/{})",
                     percent_skipped, skipped_frames, frames_rendered
                 );
+
+                println!("number of particles: {}", particles.len());
             }
         }
         pixels.get_frame_mut().fill(0u8);
