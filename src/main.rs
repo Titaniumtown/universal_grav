@@ -46,7 +46,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
         Scenario::SimpleElliptical => {
             vec![
                 Particle::new(10f32.powi(13), 0.0, 0.0, 50.0, 50.0, [255, 165, 0]),
-                Particle::new(1.0, 0.0, -3.0, 75.0, 50.0, [0, 255, 255]),
+                Particle::new(0.0, 0.0, -3.0, 75.0, 50.0, [0, 255, 255]),
             ]
         }
         Scenario::Circle => {
