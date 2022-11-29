@@ -7,7 +7,9 @@ edition = "2021"
 
 [profile.release]
 strip = true
-lto = "fat"
+
+# fat lto reduces binary size, but compile times almost double, so no
+# lto = "fat"
 
 [dependencies]
 pixels =  "0.10.0"
