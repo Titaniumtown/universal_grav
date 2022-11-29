@@ -25,6 +25,7 @@ enum Scenario {
 }
 
 impl Scenario {
+    // todo, find a much cleaner way of doing this
     fn incr(&self) -> Scenario {
         match *self {
             Scenario::SimpleElliptical => Scenario::Circle,
