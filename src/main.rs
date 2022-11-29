@@ -221,3 +221,4 @@ fn main() {
         });
         pixels.render().unwrap();
     })
+}
