@@ -13,10 +13,11 @@ mod particle;
 enum Scenario {
     SimpleElliptical,
     Circle,
+    Multi,
 }
 
 fn main() {
-    let instance: Scenario = Scenario::SimpleElliptical;
+    let instance: Scenario = Scenario::Multi;
     let mut particles: Vec<Particle> = match instance {
         Scenario::SimpleElliptical => {
             vec![
@@ -25,10 +26,10 @@ fn main() {
             ]
         }
         Scenario::Circle => {
-            let center_size: f32 = 10f32.powi(13);
+            let center_mass: f32 = 10f32.powi(13);
             let center: f32 = GRID_CENTER.0;
             let radius: f32 = 25.0;
-            let orbit_speed = orbit_speed(center_size as f64, radius as f64);
+            let orbit_speed = orbit_speed(center_mass as f64, radius as f64);
 
             // internal time
             let period = (2.0 * std::f32::consts::PI * radius) / orbit_speed;
@@ -38,11 +39,11 @@ fn main() {
 
             println!(
                 "center mass: {}kg\norbit radius: {} meters\norbit speed: {} m/s\nperiod: {}s ({}s)",
-                center_size, radius, orbit_speed, period, user_period
+                center_mass, radius, orbit_speed, period, user_period
             );
 
             vec![
-                Particle::new(center_size, 0.0, 0.0, center, GRID_CENTER.1, [255, 165, 0]),
+                Particle::new(center_mass, 0.0, 0.0, center, GRID_CENTER.1, [255, 165, 0]),
                 Particle::new(
                     1.0,
                     0.0,
@@ -53,6 +54,60 @@ fn main() {
                 ),
             ]
         }
+        Scenario::Multi => {
+            vec![
+                Particle::new(10f32.powi(13), 0.0, 0.0, 50.0, GRID_CENTER.1, [255, 165, 0]),
+                Particle::new(
+                    0.0,
+                    0.0,
+                    orbit_speed(10f32.powi(13) as f64, 5.0 as f64),
+                    55.0,
+                    GRID_CENTER.1,
+                    [150, 0, 250],
+                ),
+                Particle::new(
+                    0.0,
+                    0.0,
+                    orbit_speed(10f32.powi(13) as f64, 10.0 as f64),
+                    60.0,
+                    GRID_CENTER.1,
+                    [0, 0, 250],
+                ),
+                Particle::new(
+                    0.0,
+                    0.0,
+                    orbit_speed(10f32.powi(13) as f64, 15.0 as f64),
+                    65.0,
+                    GRID_CENTER.1,
+                    [255, 150, 0],
+                ),
+                Particle::new(
+                    0.0,
+                    0.0,
+                    orbit_speed(10f32.powi(13) as f64, 20.0 as f64),
+                    70.0,
+                    GRID_CENTER.1,
+                    [255, 150, 100],
+                ),
+                Particle::new(
+                    0.0,
+                    0.0,
+                    orbit_speed(10f32.powi(13) as f64, 25.0 as f64),
+                    75.0,
+                    GRID_CENTER.1,
+                    [0, 150, 150],
+                ),
+                Particle::new(
+                    0.0,
+                    0.0,
+                    orbit_speed(10f32.powi(13) as f64, 30.0 as f64),
+                    80.0,
+                    GRID_CENTER.1,
+                    [150, 150, 150],
+                ),
+                Particle::new(0.0, 1.5, 0.0, GRID_CENTER.1, 10.0, [200, 200, 200]),
+            ]
+        }
     };
 
     let event_loop = EventLoop::new();
@@ -61,7 +116,7 @@ fn main() {
         let size = LogicalSize::new(DIMS.0, DIMS.1);
         let scaled_size = LogicalSize::new(DIMS.0 * 10, DIMS.1 * 10);
         WindowBuilder::new()
-            .with_title("Universal Gravitation")
+            .with_title("Universal Gravitation Demo")
             .with_inner_size(scaled_size)
             .with_min_inner_size(size)
             .with_decorations(false) // weird graphical issue happens without this (at least on gnome + wayland) further investigation needed
