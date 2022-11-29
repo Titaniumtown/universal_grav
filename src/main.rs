@@ -176,7 +176,10 @@ fn main() {
             .expect("failed to create pixels")
     };
 
+    let mut screen_data: Vec<(usize, [u8; 3])> = Vec::new();
+    let mut screen_data_old: Vec<(usize, [u8; 3])> = Vec::new();
     event_loop.run(move |event, _, _| {
+        screen_data.clear();
         if input.update(&event) {
             if input.key_released(VirtualKeyCode::Right) {
                 scenario = scenario.incr();
@@ -205,7 +208,6 @@ fn main() {
             p.tick()
         });
 
-        let frame = pixels.get_frame_mut();
         particles.iter().for_each(|p| {
             // convert to u32 and clamp
             let x = (p.pos_x as u32).clamp(0, DIMS.0 - 1);
@@ -214,11 +216,22 @@ fn main() {
             // calculate linear index
             let i = ((y * DIMS.0) + x) as usize * 4;
 
-            // set color
-            frame[i..=i + 2].copy_from_slice(&p.rgb);
-            // set alpha channel
-            frame[i + 3] = 255u8;
+            // push data to screen_data
+            screen_data.push((i, p.rgb));
         });
-        pixels.render().unwrap();
+
+        let frame = pixels.get_frame_mut();
+        if screen_data != screen_data_old {
+            screen_data.iter().for_each(|(i, rgb)| {
+                // set color
+                frame[*i..=*i + 2].copy_from_slice(rgb);
+
+                // set alpha channel
+                frame[*i + 3] = 255u8;
+            });
+            pixels.render().expect("failed to render");
+            // no need to copy here as `screen_data` will be cleared on next iteration of the event loop
+            std::mem::swap(&mut screen_data_old, &mut screen_data);
+        }
     })
 }
