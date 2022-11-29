@@ -1,5 +1,5 @@
 use crate::{
-    misc::{orbit_speed, DIMS, GRID_CENTER, TIME_DELTA},
+    misc::{orbit_speed, DIMS, GRID_CENTER},
     particle::Particle,
 };
 
