@@ -14,10 +14,11 @@ enum Scenario {
     SimpleElliptical,
     Circle,
     Multi,
+    Dual,
 }
 
 fn main() {
-    let instance: Scenario = Scenario::Multi;
+    let instance: Scenario = Scenario::Dual;
     let mut particles: Vec<Particle> = match instance {
         Scenario::SimpleElliptical => {
             vec![
@@ -52,6 +53,19 @@ fn main() {
                     GRID_CENTER.1,
                     [0, 0, 255],
                 ),
+            ]
+        }
+        Scenario::Dual => {
+            vec![
+                Particle::new(
+                    10f32.powi(13),
+                    0.0,
+                    -2.5,
+                    25.0,
+                    GRID_CENTER.1,
+                    [255, 165, 0],
+                ),
+                Particle::new(10f32.powi(13), 0.0, 2.5, 75.0, GRID_CENTER.1, [255, 165, 0]),
             ]
         }
         Scenario::Multi => {
