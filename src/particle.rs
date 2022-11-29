@@ -45,17 +45,23 @@ impl Particle {
 
         let sq_dist = x_neg.powi(2) + y_neg.powi(2);
 
+        // calculate acceleration using Newton's laws of universal gravitation
         let acceleration = (G * other.mass as f64) / sq_dist as f64;
 
+        // this shouldn't happen, but should be checked so infinite or NaN isn't attempted to be applied
         if !acceleration.is_normal() {
             return;
         }
 
+        // calculate scalar of velocity change on the object in this time
         let diff_velocity = acceleration as f32 * TIME_DELTA;
 
+        // interpret scalar change in velocity into velocity in the x and y direction
         let dist = sq_dist.sqrt();
         let y_add = diff_velocity * y_neg / dist;
         let x_add = diff_velocity * x_neg / dist;
+
+        // actually apply to object
         self.v_y += y_add;
         self.v_x += x_add;
     }
