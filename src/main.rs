@@ -85,7 +85,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f64.powi(13), 5.0_f64),
+                    orbit_speed(10f64.powi(13), 5.0),
                     55.0,
                     GRID_CENTER.1,
                     [150, 0, 250],
@@ -93,7 +93,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f64.powi(13), 10.0_f64),
+                    orbit_speed(10f64.powi(13), 10.0),
                     60.0,
                     GRID_CENTER.1,
                     [0, 0, 250],
@@ -101,7 +101,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f64.powi(13), 15.0_f64),
+                    orbit_speed(10f64.powi(13), 15.0),
                     65.0,
                     GRID_CENTER.1,
                     [255, 150, 0],
@@ -109,7 +109,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f64.powi(13), 20.0_f64),
+                    orbit_speed(10f64.powi(13), 20.0),
                     70.0,
                     GRID_CENTER.1,
                     [255, 150, 100],
@@ -117,7 +117,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f64.powi(13), 25.0_f64),
+                    orbit_speed(10f64.powi(13), 25.0),
                     75.0,
                     GRID_CENTER.1,
                     [0, 150, 150],
@@ -125,7 +125,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
                 Particle::new(
                     0.0,
                     0.0,
-                    orbit_speed(10f64.powi(13), 30.0_f64),
+                    orbit_speed(10f64.powi(13), 30.0),
                     80.0,
                     GRID_CENTER.1,
                     [150, 150, 150],
@@ -135,15 +135,16 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
         }
         Scenario::Dual => {
             vec![
+                Particle::new(10f32.powi(13), 0.0, -4.0, 45.0, GRID_CENTER.1, [0, 255, 0]),
+                Particle::new(10f32.powi(13), 0.0, 4.0, 55.0, GRID_CENTER.1, [255, 0, 0]),
                 Particle::new(
-                    10f32.powi(13),
                     0.0,
-                    -2.5,
-                    25.0,
+                    0.0,
+                    orbit_speed(2.0 * 10f64.powi(13), 30.0),
+                    80.0,
                     GRID_CENTER.1,
-                    [255, 165, 0],
+                    [0, 0, 255],
                 ),
-                Particle::new(10f32.powi(13), 0.0, 2.5, 75.0, GRID_CENTER.1, [255, 165, 0]),
             ]
         }
     }
