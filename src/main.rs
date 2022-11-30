@@ -1,11 +1,10 @@
 #![feature(const_float_classify)]
-#![feature(core_intrinsics)]
 
 #[macro_use]
 extern crate static_assertions;
 
 use crate::{
-    misc::{orbit_speed, DIMS, GRID_CENTER, TIME_DELTA},
+    misc::{orbit_speed, DIMS, DIMS_U32, GRID_CENTER, TIME_DELTA},
     particle::Particle,
 };
 
@@ -32,7 +31,7 @@ enum Scenario {
 
 impl Scenario {
     // todo, find a much cleaner way of doing this
-    fn incr(&self) -> Scenario {
+    const fn incr(&self) -> Scenario {
         match *self {
             Scenario::SimpleElliptical => Scenario::Circle,
             Scenario::Circle => Scenario::Multi,
@@ -41,7 +40,7 @@ impl Scenario {
         }
     }
 
-    fn decr(&self) -> Scenario {
+    const fn decr(&self) -> Scenario {
         match *self {
             Scenario::Circle => Scenario::SimpleElliptical,
             Scenario::Multi => Scenario::Circle,
@@ -63,13 +62,13 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
             let center_mass: f32 = 1e+13;
             let center: f32 = GRID_CENTER.0;
             let radius: f32 = 25.0;
-            let orbit_speed = orbit_speed(center_mass as f64, radius as f64);
+            let orbit_speed: f32 = orbit_speed(center_mass, radius);
 
             // internal time
-            let period = (2.0 * std::f32::consts::PI * radius) / orbit_speed;
+            let period: f32 = (2.0 * std::f32::consts::PI * radius) / orbit_speed;
 
             // takes TIME_DELTA into account
-            let user_period = period * TIME_DELTA;
+            let user_period: f32 = period * TIME_DELTA;
 
             println!(
                 "center mass: {}kg\norbit radius: {} meters\norbit speed: {} m/s\nperiod: {}s ({}s)",
@@ -169,11 +168,9 @@ fn main() {
     let event_loop = EventLoop::new();
     let mut input = WinitInputHelper::new();
     let window = {
-        let size = LogicalSize::new(DIMS.0 as u32, DIMS.1 as u32);
-        let scaled_size = LogicalSize::new(
-            DIMS.0 as u32 * SCALING_FACTOR,
-            DIMS.1 as u32 * SCALING_FACTOR,
-        );
+        let size = LogicalSize::new(DIMS_U32.0, DIMS_U32.1);
+        let scaled_size =
+            LogicalSize::new(DIMS_U32.0 * SCALING_FACTOR, DIMS_U32.1 * SCALING_FACTOR);
         WindowBuilder::new()
             .with_inner_size(scaled_size)
             .with_min_inner_size(size)
@@ -186,7 +183,7 @@ fn main() {
     let mut pixels = {
         let window_size = window.inner_size();
         let surface_texture = SurfaceTexture::new(window_size.width, window_size.height, &window);
-        PixelsBuilder::new(DIMS.0 as u32, DIMS.1 as u32, surface_texture)
+        PixelsBuilder::new(DIMS_U32.0, DIMS_U32.1, surface_texture)
             .enable_vsync(true)
             .build()
             .map_err(|e| panic!("failed to build pixels: {e}"))

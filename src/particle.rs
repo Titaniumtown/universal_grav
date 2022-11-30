@@ -11,13 +11,20 @@ pub struct Particle {
 }
 
 impl Particle {
-    pub fn new(mass: f32, v_x: f32, v_y: f32, pos_x: f32, pos_y: f32, rgb: [u8; 3]) -> Particle {
+    pub const fn new(
+        mass: f32,
+        v_x: f32,
+        v_y: f32,
+        pos_x: f32,
+        pos_y: f32,
+        rgb: [u8; 3],
+    ) -> Particle {
         Particle {
             mass,
             v_x,
             v_y,
-            pos_x: pos_x.clamp(0.0, DIMS_F32.0),
-            pos_y: pos_y.clamp(0.0, DIMS_F32.1),
+            pos_x,
+            pos_y,
             rgb,
         }
     }
@@ -46,15 +53,15 @@ impl Particle {
         let sq_dist = x_neg.powi(2) + y_neg.powi(2);
 
         // calculate acceleration using Newton's laws of universal gravitation
-        let acceleration = (G * other.mass as f64) / sq_dist as f64;
+        let acceleration = (G * other.mass) / sq_dist;
 
-        // this shouldn't happen, but should be checked so infinite or NaN isn't attempted to be applied
+        // this shouldn't happen, but should be checked so infinite or NaN acceleration isn't attempted to be applied
         if !acceleration.is_normal() {
             return;
         }
 
         // calculate scalar of velocity change on the object in this time
-        let diff_velocity = acceleration as f32 * TIME_DELTA;
+        let diff_velocity = acceleration * TIME_DELTA;
 
         // interpret scalar change in velocity into velocity in the x and y direction
         let dist = sq_dist.sqrt();
