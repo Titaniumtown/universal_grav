@@ -194,9 +194,6 @@ fn main() {
     };
 
     let mut screen_data_old: Vec<(usize, [u8; 3])> = Vec::new();
-    let mut frames_rendered: u32 = 0;
-    let mut skipped_frames: u32 = 0;
-
     event_loop.run(move |event, _, control_flow| {
         if input.update(&event) {
             if input.key_released(VirtualKeyCode::Right) {
@@ -215,15 +212,7 @@ fn main() {
             }
 
             // print info when I key pressed
-            if input.key_pressed(VirtualKeyCode::I) && frames_rendered != 0 {
-                let percent_skipped: f32 =
-                    ((skipped_frames as f32) / (frames_rendered as f32)) * 100.0;
-
-                println!(
-                    "frames skipped: {}% ({}/{})",
-                    percent_skipped, skipped_frames, frames_rendered
-                );
-
+            if input.key_pressed(VirtualKeyCode::I) {
                 println!("number of particles: {}", particles.len());
             }
         }
@@ -279,9 +268,6 @@ fn main() {
 
             // no need to copy here as `screen_data` will be cleared on next iteration of the event loop
             screen_data_old = screen_data;
-        } else {
-            skipped_frames += 1;
         }
-        frames_rendered += 1;
     });
 }
