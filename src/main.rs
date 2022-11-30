@@ -175,12 +175,12 @@ fn main() {
             DIMS.1 as u32 * SCALING_FACTOR,
         );
         WindowBuilder::new()
-            .with_title("Universal Gravitation Demo")
             .with_inner_size(scaled_size)
             .with_min_inner_size(size)
             .with_decorations(false) // weird graphical issue happens without this (at least on gnome + wayland) further investigation needed
             .build(&event_loop)
-            .expect("WindowBuilder failed")
+            .map_err(|e| panic!("failed to build Window: {e}"))
+            .unwrap()
     };
 
     let mut pixels = {
