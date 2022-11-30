@@ -233,8 +233,8 @@ fn main() {
             .iter()
             .map(|p| {
                 // convert to u32 and clamp
-                let x = (p.pos_x as usize).clamp(0, DIMS.0 - 1);
-                let y = (p.pos_y as usize).clamp(0, DIMS.1 - 1);
+                let x = (p.pos_x as usize).saturating_sub(1);
+                let y = (p.pos_y as usize).saturating_sub(1);
 
                 // calculate linear index
                 let i = ((y * DIMS.0) + x) * 4;
