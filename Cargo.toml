@@ -9,7 +9,7 @@ edition = "2021"
 strip = true
 
 # fat lto reduces binary size, but compile times almost double, so no
-# lto = "fat"
+lto = "fat"
 
 [dependencies]
 pixels =  "0.10.0"
