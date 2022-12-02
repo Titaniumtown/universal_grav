@@ -196,20 +196,14 @@ fn main() {
             if input.key_released(VirtualKeyCode::Right) {
                 scenario = scenario.incr();
                 particles = set_scenario(scenario);
-            }
-
-            if input.key_pressed(VirtualKeyCode::Left) {
+            } else if input.key_pressed(VirtualKeyCode::Left) {
                 scenario = scenario.decr();
                 particles = set_scenario(scenario);
-            }
-
-            // exit if escape key pressed
-            if input.key_pressed(VirtualKeyCode::Escape) {
+            } else if input.key_pressed(VirtualKeyCode::Escape) {
+                // exit if escape key pressed
                 *control_flow = ControlFlow::Exit;
-            }
-
-            // print info when I key pressed
-            if input.key_pressed(VirtualKeyCode::I) {
+            } else if input.key_pressed(VirtualKeyCode::I) {
+                // print info when I key pressed
                 println!("number of particles: {}", particles.len());
             }
         }
