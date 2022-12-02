@@ -7,7 +7,7 @@ edition = "2021"
 
 [profile.release]
 strip = true
-
+codegen-units = 1
 # fat lto reduces binary size, but compile times almost double, so no
 lto = "fat"
 
