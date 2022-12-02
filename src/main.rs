@@ -214,8 +214,6 @@ fn main() {
             }
         }
 
-        pixels.get_frame_mut().fill(0u8);
-
         let particles_copy = particles.clone();
         particles.iter_mut().enumerate().for_each(|(i, p)| {
             // apply gravity from every object
@@ -246,13 +244,10 @@ fn main() {
 
         if screen_data != screen_data_old {
             let frame = pixels.get_frame_mut();
+            frame.fill(0u8);
             screen_data.iter().for_each(|(i, rgb)| {
-                let i = *i;
-                // set color
-                frame[i..=i + 2].copy_from_slice(rgb);
-
-                // set alpha channel
-                frame[i + 3] = 255u8;
+                unsafe { frame.get_unchecked_mut(*i..=*i + 3) }
+                    .copy_from_slice(&[rgb[0], rgb[1], rgb[2], 255u8]);
             });
 
             if pixels
