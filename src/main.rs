@@ -71,8 +71,7 @@ fn set_scenario(s: Scenario) -> Vec<Particle> {
             let user_period: f32 = period * TIME_DELTA;
 
             println!(
-                "center mass: {}kg\norbit radius: {} meters\norbit speed: {} m/s\nperiod: {}s ({}s)",
-                center_mass, radius, orbit_speed, period, user_period
+                "center mass: {center_mass}kg\norbit radius: {radius} meters\norbit speed: {orbit_speed} m/s\nperiod: {period}s ({user_period}s)"
             );
 
             vec![
