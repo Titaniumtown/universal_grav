@@ -31,8 +31,8 @@ enum Scenario {
 
 impl Scenario {
     // todo, find a much cleaner way of doing this
-    const fn incr(&self) -> Scenario {
-        match *self {
+    const fn incr(self) -> Scenario {
+        match self {
             Scenario::SimpleElliptical => Scenario::Circle,
             Scenario::Circle => Scenario::Multi,
             Scenario::Multi => Scenario::Dual,
@@ -40,8 +40,8 @@ impl Scenario {
         }
     }
 
-    const fn decr(&self) -> Scenario {
-        match *self {
+    const fn decr(self) -> Scenario {
+        match self {
             Scenario::Circle => Scenario::SimpleElliptical,
             Scenario::Multi => Scenario::Circle,
             Scenario::Dual => Scenario::Multi,
@@ -212,12 +212,12 @@ fn main() {
             // apply gravity from every object
             for (other_i, other_p) in particles_copy.iter().enumerate() {
                 if other_i != i {
-                    p.gravity(other_p)
+                    p.gravity(other_p);
                 }
             }
 
             // tick the particle
-            p.tick()
+            p.tick();
         });
 
         let screen_data: Vec<(usize, [u8; 3])> = particles
@@ -238,10 +238,10 @@ fn main() {
         if screen_data != screen_data_old {
             let frame = pixels.get_frame_mut();
             frame.fill(0u8);
-            screen_data.iter().for_each(|(i, rgb)| {
+            for (i, rgb) in &screen_data {
                 unsafe { frame.get_unchecked_mut(*i..=*i + 3) }
                     .copy_from_slice(&[rgb[0], rgb[1], rgb[2], 255u8]);
-            });
+            }
 
             if pixels
                 .render()
